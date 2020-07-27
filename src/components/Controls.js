@@ -42,7 +42,7 @@ const Controls = props => {
             runningRef.current = true;
             start()
           }
-          }} 
+        }} 
         className={running ? "stop-button" : "start-button" }>
         {running ? 'Stop' : 'Start'}
       </button>

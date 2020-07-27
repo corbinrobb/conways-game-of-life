@@ -3,11 +3,11 @@ import React from 'react';
 const Grid = ({ grid, setGrid }) => {
 
   const changeColor = (rowIndex, colIndex) => {
-    const newGrid = grid.map(row => [...row]);
-
-    newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] ? 0 : 1;
-
-    setGrid(newGrid)
+    setGrid(() => {
+      const newGrid = grid.map(row => [...row]);
+      newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] ? 0 : 1;
+      return newGrid;
+    })
   }
 
   return (

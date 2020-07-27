@@ -41,7 +41,11 @@ const App = () => {
   }, [count])
 
   const clearGrid = () => {
-    setGrid(createGrid(sides));
+    setGrid(() => {
+      const newGrid = gridRef.current.map(row => row.map(col => 0));
+      gridRef.current = newGrid;
+      return newGrid;
+    });
     setCount(0);
     setSpeed(1000); 
   }
@@ -64,30 +68,32 @@ const App = () => {
   const start = useCallback(() => {
     if (!runningRef.current) return;
 
-    const newGrid = gridRef.current.map(row => [...row]);
-    
-    for (let row = 0; row < sidesRef.current; row++) {
-      for (let col = 0; col < sidesRef.current; col++) {
-        let neighbors = 0;
-        neighborCoord.forEach(([x, y]) => {
-          const newRow = row + x;
-          const newCol = col + y;
-          if (newRow >= 0 
-            && newRow < sidesRef.current 
-            && newCol >= 0 
-            && newCol < sidesRef.current) {
-            neighbors += gridRef.current[newRow][newCol]
+    setGrid(() => {
+      const newGrid = gridRef.current.map(row => [...row]);
+
+      for (let row = 0; row < sidesRef.current; row++) {
+        for (let col = 0; col < sidesRef.current; col++) {
+          let neighbors = 0;
+          neighborCoord.forEach(([x, y]) => {
+            const newRow = row + x;
+            const newCol = col + y;
+            if (newRow >= 0 
+              && newRow < sidesRef.current 
+              && newCol >= 0 
+              && newCol < sidesRef.current) {
+              neighbors += gridRef.current[newRow][newCol]
+            }
+          })
+          if (neighbors < 2 || neighbors > 3) {
+            newGrid[row][col] = 0;
+          } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
+            newGrid[row][col] = 1;
           }
-        })
-        if (neighbors < 2 || neighbors > 3) {
-          newGrid[row][col] = 0;
-        } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
-          newGrid[row][col] = 1;
         }
       }
-    }
 
-    setGrid(newGrid);
+      return newGrid;
+    });
     
     setCount(countRef.current + 1);
 
@@ -109,15 +115,17 @@ const App = () => {
 
     clearGrid();
 
-    const newGrid = gridRef.current.map(row => [...row]);
+    setGrid(() => {
+      const newGrid = gridRef.current.map(row => [...row]);
 
-    matrix.forEach(([x, y]) => {
-      const newRow = row + x;
-      const newCol = col + y;
-      newGrid[newRow][newCol] = 1;
-    })
+      matrix.forEach(([x, y]) => {
+        const newRow = row + x;
+        const newCol = col + y;
+        newGrid[newRow][newCol] = 1;
+      })
 
-    setGrid(newGrid);
+      return newGrid;
+    });
   }
 
   return (
