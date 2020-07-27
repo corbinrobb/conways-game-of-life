@@ -6,9 +6,7 @@ const Grid = ({ grid, setGrid }) => {
   const changeColor = (rowIndex, colIndex) => {    
     setGrid(g => {
       return produce(g, newGrid => {
-        newGrid[rowIndex][colIndex]
-      ? newGrid[rowIndex][colIndex] = 0
-      : newGrid[rowIndex][colIndex] = 1;
+        newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] ? 0 : 1;
       })
     })
   }

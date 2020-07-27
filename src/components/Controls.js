@@ -1,6 +1,38 @@
 import React from 'react';
 
-const Controls = ({ setRunning, running, runningRef, start, clearGrid }) => {
+const Controls = props => {
+
+  const { 
+    setRunning, 
+    running, 
+    runningRef, 
+    start, 
+    clearGrid, 
+    sides, 
+    setSides, 
+    speed, 
+    setSpeed,
+    setCount
+  } = props;
+
+  const largerGrid = () => {
+    if (sides < 40) setSides(sides + 5)
+    setCount(0)
+  }
+
+  const smallerGrid = () => {
+    if (sides > 20) setSides(sides - 5)
+    setCount(0)
+  }
+
+  const slower = () => {
+    if (speed < 2000) setSpeed(speed + 250);
+  }
+
+  const faster = () => {
+    if (speed > 250) setSpeed(speed - 250);
+  }
+
   return (
     <div className="controls">
       <button 
@@ -20,6 +52,14 @@ const Controls = ({ setRunning, running, runningRef, start, clearGrid }) => {
       >
         Clear
       </button>
+      <button className="speed-button" onClick={slower}>Slower</button>
+      <button className="speed-button" onClick={faster}>Faster</button>
+      {running ? null : 
+        <>
+          <button className="grid-button" onClick={smallerGrid}>-5 Grid</button>
+          <button className="grid-button" onClick={largerGrid}>+5 Grid</button>
+        </>
+      }
     </div>
   );
 }
