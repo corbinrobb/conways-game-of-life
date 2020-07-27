@@ -1,42 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Grid from './Grid';
-import produce from 'immer';
 import Controls from './Controls';
 import Preset from './Preset';
-
-
-const neighborCoord = [
-  [-1, 0], [-1, 1], [-1, -1], [0, 1], 
-  [0, -1], [1, 1], [1, 0], [1, -1],
-]
-
-const presets = [
-  { name: "Glider", 
-    matrix: [[1, 0],[1, -1],[1, 1],[0, 1],[-1, 0]],
-    start: [1, 1]
-  },
-  { name: "Toad", 
-    matrix: [[0, 0], [1, -1], [1, 0], [0, 1], [0, 2], [1, 1]],
-    start: 0
-  },
-  { name: "Quad Blinker", 
-    matrix: [[0,0], [-1, 0], [0, -1], [0, 1], [1, 0]],
-    start: 0
-  },
-  { name: "Pulsar", 
-    matrix: [
-              [-2,1],[-3,1],[-4,1],[-1,2],[-1,3],[-1,4],
-              [2,1],[3,1],[4,1],[1,2],[1,3],[1,4],
-              [-1,-2],[-1,-3],[-1,-4],[-2,-1],[-3,-1],[-4,-1],
-              [1,-2],[1,-3],[1,-4],[2,-1],[3,-1],[4,-1],
-              [-6,2],[-6,3],[-6,4],[-2,6],[-3,6],[-4,6],
-              [6,2],[6,3],[6,4],[2,6],[3,6],[4,6],
-              [-6,-2],[-6,-3],[-6,-4],[-2,-6],[-3,-6],[-4,-6],
-              [6,-2],[6,-3],[6,-4],[2,-6],[3,-6],[4,-6],
-            ],
-    start: 0
-  },
-];
+import { neighborCoord, presets } from './coordinates';
 
 const createGrid = sides => {
   const rows = [];
@@ -58,6 +24,10 @@ const App = () => {
   const [speed, setSpeed] = useState(1000);
 
   useEffect(() => {
+    gridRef.current = grid;
+  }, [grid])
+
+  useEffect(() => {
     setGrid(createGrid(sides))
     sidesRef.current = sides;
   }, [sides])
@@ -66,11 +36,18 @@ const App = () => {
     speedRef.current = speed;
   }, [speed])
 
+  useEffect(() => {
+    countRef.current = count;
+  }, [count])
+
   const clearGrid = () => {
-    setGrid(g => produce(g, newG => newG.map(row => row.map(col => 0 ))))
+    setGrid(createGrid(sides));
     setCount(0);
-    setSpeed(1000);
+    setSpeed(1000); 
   }
+
+  const gridRef = useRef(grid);
+  gridRef.current = grid;
 
   const runningRef = useRef(running);
   runningRef.current = running;
@@ -81,35 +58,38 @@ const App = () => {
   const speedRef = useRef(speed);
   speedRef.current = speed;
 
+  const countRef = useRef(count);
+  countRef.current = count;
+
   const start = useCallback(() => {
     if (!runningRef.current) return;
+
+    const newGrid = gridRef.current.map(row => [...row]);
     
-    setGrid(g => {
-      return produce(g, newGrid => {
-        for (let row = 0; row < sidesRef.current; row++) {
-          for (let col = 0; col < sidesRef.current; col++) {
-            let neighbors = 0;
-            neighborCoord.forEach(([x, y]) => {
-              const newRow = row + x;
-              const newCol = col + y;
-              if (newRow >= 0 
-                && newRow < sidesRef.current 
-                && newCol >= 0 
-                && newCol < sidesRef.current) {
-                neighbors += g[newRow][newCol]
-              }
-            })
-            if (neighbors < 2 || neighbors > 3) {
-              newGrid[row][col] = 0;
-            } else if (g[row][col] === 0 && neighbors === 3) {
-              newGrid[row][col] = 1;
-            }
+    for (let row = 0; row < sidesRef.current; row++) {
+      for (let col = 0; col < sidesRef.current; col++) {
+        let neighbors = 0;
+        neighborCoord.forEach(([x, y]) => {
+          const newRow = row + x;
+          const newCol = col + y;
+          if (newRow >= 0 
+            && newRow < sidesRef.current 
+            && newCol >= 0 
+            && newCol < sidesRef.current) {
+            neighbors += gridRef.current[newRow][newCol]
           }
+        })
+        if (neighbors < 2 || neighbors > 3) {
+          newGrid[row][col] = 0;
+        } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
+          newGrid[row][col] = 1;
         }
-      })
-    });
+      }
+    }
+
+    setGrid(newGrid);
     
-    setCount(c => produce(c, newC => newC + 1));
+    setCount(countRef.current + 1);
 
     setTimeout(start, speedRef.current)
   }, [])
@@ -129,13 +109,15 @@ const App = () => {
 
     clearGrid();
 
-    setGrid(g => produce(g, newGrid => {
-      matrix.forEach(([x, y]) => {
-        const newRow = row + x;
-        const newCol = col + y;
-        newGrid[newRow][newCol] = 1;
-      })
-    }))
+    const newGrid = gridRef.current.map(row => [...row]);
+
+    matrix.forEach(([x, y]) => {
+      const newRow = row + x;
+      const newCol = col + y;
+      newGrid[newRow][newCol] = 1;
+    })
+
+    setGrid(newGrid);
   }
 
   return (

@@ -1,14 +1,13 @@
 import React from 'react';
-import produce from 'immer';
 
 const Grid = ({ grid, setGrid }) => {
 
-  const changeColor = (rowIndex, colIndex) => {    
-    setGrid(g => {
-      return produce(g, newGrid => {
-        newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] ? 0 : 1;
-      })
-    })
+  const changeColor = (rowIndex, colIndex) => {
+    const newGrid = grid.map(row => [...row]);
+
+    newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] ? 0 : 1;
+
+    setGrid(newGrid)
   }
 
   return (
