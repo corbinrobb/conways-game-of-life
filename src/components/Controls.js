@@ -46,20 +46,11 @@ const Controls = props => {
         className={running ? "stop-button" : "start-button" }>
         {running ? 'Stop' : 'Start'}
       </button>
-      <button 
-        onClick={() => clearGrid()}
-        className="clear-button"
-      >
-        Clear
-      </button>
+      <button onClick={() => clearGrid()} className="clear-button">Clear</button>
       <button className="speed-button" onClick={slower}>Slower</button>
       <button className="speed-button" onClick={faster}>Faster</button>
-      {running ? null : 
-        <>
-          <button className="grid-button" onClick={smallerGrid}>-5 Grid</button>
-          <button className="grid-button" onClick={largerGrid}>+5 Grid</button>
-        </>
-      }
+      <button disabled={running} className="grid-button" onClick={smallerGrid}>-5 Grid</button>
+      <button disabled={running} className="grid-button" onClick={largerGrid}>+5 Grid</button>
     </div>
   );
 }
