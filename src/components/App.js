@@ -128,6 +128,16 @@ const App = () => {
     });
   }
 
+  const randomGrid = () => {
+    clearGrid()
+
+    setGrid(() => {
+      return gridRef.current.map(row => row.map(col => {
+        return (Math.random() < 0.5) ? 1 : 0;
+      }))
+    })
+  }
+
   return (
     <>
       <main>
@@ -165,6 +175,7 @@ const App = () => {
                     createPresetGrid={createPresetGrid}
                   />
                 })}
+                <div onClick={randomGrid}>Random</div>
               </div>
             </div>
             <div className="rules">
