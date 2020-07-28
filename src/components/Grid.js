@@ -12,18 +12,17 @@ const Grid = ({ grid, setGrid }) => {
 
   return (
     <div className="grid">
-      {grid.map((row, i1) => {
-        return <div key={'row' + i1} className="row">
-            {row.map((col, i2) => {
-              return (
-                <div 
-                  key={'col' + i2}
-                  className={col ? "cell alive" : "cell"} 
-                  onClick={() => changeColor(i1, i2)} 
-                />)
-          })}
-        </div>
-      })}
+      {grid.map((row, i1) =>  (
+          <div key={'row' + i1} className="row">
+            {row.map((col, i2) => (
+              <div
+                key={'col' + i2}
+                className={col ? "cell alive" : "cell"} 
+                onClick={() => changeColor(i1, i2)} 
+              />
+            ))}
+          </div>
+        ))}
     </div>
   );
 }

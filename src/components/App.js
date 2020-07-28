@@ -24,6 +24,7 @@ const App = () => {
   const [speed, setSpeed] = useState(1000);
   const [history, setHistory] = useState([]);
 
+
   useEffect(() => {
     gridRef.current = grid;
   }, [grid])
@@ -45,6 +46,7 @@ const App = () => {
     historyRef.current = history;
   }, [history])
 
+
   const gridRef = useRef(grid);
   gridRef.current = grid;
 
@@ -62,6 +64,7 @@ const App = () => {
 
   const historyRef = useRef(history);
   historyRef.current = history;
+
 
   const checkNeighbors = () => {
     const newGrid = gridRef.current.map(row => [...row]);
@@ -154,11 +157,9 @@ const App = () => {
   const randomGrid = () => {
     clearGrid()
 
-    setGrid(() => {
-      return gridRef.current.map(row => row.map(col => {
-        return (Math.random() < 0.5) ? 1 : 0;
-      }))
-    })
+    setGrid(gridRef.current.map(row => row.map(col => {
+        return (Math.random() < 0.35) ? 1 : 0;
+      })))
   }
 
   return (
