@@ -22,6 +22,7 @@ const App = () => {
   const [running, setRunning] = useState(false);
   const [count, setCount] = useState(0);
   const [speed, setSpeed] = useState(1000);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     gridRef.current = grid;
@@ -40,15 +41,9 @@ const App = () => {
     countRef.current = count;
   }, [count])
 
-  const clearGrid = () => {
-    setGrid(() => {
-      const newGrid = gridRef.current.map(row => row.map(col => 0));
-      gridRef.current = newGrid;
-      return newGrid;
-    });
-    setCount(0);
-    setSpeed(1000); 
-  }
+  useEffect(() => {
+    historyRef.current = history;
+  }, [history])
 
   const gridRef = useRef(grid);
   gridRef.current = grid;
@@ -65,41 +60,69 @@ const App = () => {
   const countRef = useRef(count);
   countRef.current = count;
 
+  const historyRef = useRef(history);
+  historyRef.current = history;
+
+  const checkNeighbors = () => {
+    const newGrid = gridRef.current.map(row => [...row]);
+
+    for (let row = 0; row < sidesRef.current; row++) {
+      for (let col = 0; col < sidesRef.current; col++) {
+        let neighbors = 0;
+        neighborCoord.forEach(([x, y]) => {
+          const newRow = row + x;
+          const newCol = col + y;
+          if (newRow >= 0 
+            && newRow < sidesRef.current 
+            && newCol >= 0 
+            && newCol < sidesRef.current) {
+            neighbors += gridRef.current[newRow][newCol]
+          }
+        })
+        if (neighbors < 2 || neighbors > 3) {
+          newGrid[row][col] = 0;
+        } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
+          newGrid[row][col] = 1;
+        }
+      }
+    }
+
+    setHistory([...historyRef.current, gridRef.current])
+    return newGrid;
+  }
+
   const start = useCallback(() => {
     if (!runningRef.current) return;
 
-    setGrid(() => {
-      const newGrid = gridRef.current.map(row => [...row]);
-
-      for (let row = 0; row < sidesRef.current; row++) {
-        for (let col = 0; col < sidesRef.current; col++) {
-          let neighbors = 0;
-          neighborCoord.forEach(([x, y]) => {
-            const newRow = row + x;
-            const newCol = col + y;
-            if (newRow >= 0 
-              && newRow < sidesRef.current 
-              && newCol >= 0 
-              && newCol < sidesRef.current) {
-              neighbors += gridRef.current[newRow][newCol]
-            }
-          })
-          if (neighbors < 2 || neighbors > 3) {
-            newGrid[row][col] = 0;
-          } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
-            newGrid[row][col] = 1;
-          }
-        }
-      }
-
-      return newGrid;
-    });
-    
+    setGrid(checkNeighbors);
     setCount(countRef.current + 1);
 
-    setTimeout(start, speedRef.current)
+    setTimeout(start, speedRef.current);
   }, [])
 
+  const nextGeneration = () => {
+    setGrid(checkNeighbors);
+    setCount(countRef.current + 1);
+  }
+
+  const prevGeneration = () => {
+    if (history.length > 0) {
+      setGrid(history[history.length - 1])
+      setHistory(history.filter(g => g !== history[history.length -1]))
+      setCount(count - 1);
+    }
+  }
+
+  const clearGrid = () => {
+    setGrid(() => {
+      const newGrid = gridRef.current.map(row => row.map(col => 0));
+      gridRef.current = newGrid;
+      return newGrid;
+    });
+    setCount(0);
+    setSpeed(1000);
+    setHistory([]);
+  }
 
   const createPresetGrid = (matrix, start) => {
     let row;
@@ -161,6 +184,8 @@ const App = () => {
               speed={speed}
               setSpeed={setSpeed}
               setCount={setCount}
+              nextGeneration={nextGeneration}
+              prevGeneration={prevGeneration}
             />
           </div>
           <div className="right">
@@ -169,6 +194,7 @@ const App = () => {
               <div className="presets-list">
                 {presets.map(preset => {
                   return <Preset 
+                    key={preset.name}
                     {...preset}
                     sides={sides}
                     clearGrid={clearGrid}

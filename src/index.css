@@ -4,10 +4,17 @@
 * {
   max-width: 100%;
   /* border: solid 1px red; */
+  color: #1e1e24;
 }
 
+
+/* GENERAL STYLES */
 h1 {
   text-align: center;
+}
+
+body {
+  background-color: #f7ebe8;
 }
 
 main {
@@ -19,6 +26,8 @@ main {
   padding: 1rem 2rem;
 }
 
+
+/* CONTENT STYLES */
 .content {
   display: flex;
 }
@@ -30,6 +39,7 @@ main {
 .content > div {
   width: 50%;
 }
+
 
 .left {
   padding: 1rem;
@@ -54,6 +64,7 @@ main {
   width: 35%;
   display: flex;
   flex-direction: column;
+  padding: 1rem;
 }
 
 .right .presets-list {
@@ -64,12 +75,15 @@ main {
 }
 
 .right .presets-list div {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid grey;
+  border: 1px solid grey;
   margin-top: 1rem;
+  background-color: #f6f7f8;
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 5px #1e1e24;
 }
 
 .right .presets-list div:hover {
@@ -80,7 +94,6 @@ main {
 
 .right .rules {
   width: 65%;
-  line-height: 1.5;
   padding: 1rem;
 }
 
@@ -90,8 +103,14 @@ main {
 
 .right .rules li {
   margin-top: 0.8rem;
+  line-height: 1.5;
+  background-color: #f6f7f8;
+  padding: 0.5rem;
+  border: 1px solid grey;
+  box-shadow: 1px 1px 5px #1e1e24;
 }
 
+/* GRID STYLES */
 .grid {
   display: flex;
   flex-direction: column;
@@ -105,14 +124,15 @@ main {
 .cell {
   width: 1rem;
   height: 1rem;
-  background-color: white;
-  border: 1px solid black;
+  background-color: #f6f7f8;
+  border: 1px solid #1e1e24;
   margin: 1px;
   border-radius: 3px;
+  box-shadow: 2px 2px 4px #1e1e24;
 }
 
 .alive {
-  background-color: black;
+  background-color: #1e1e24;
 }
 
 .controls {
@@ -121,49 +141,65 @@ main {
   justify-content: space-evenly;
 }
 
+
+/* BUTTON STYLES */
 button {
   font-size: 1rem;
   border-radius: 0.2rem;
   padding: 0.2rem 0.5rem;
+  border: 1px solid #1e1e24;
+  box-shadow: 1px 1px 2px #1e1e24;
 }
 
 button:hover {
   border-color: blueviolet;
+  color: blueviolet;
   cursor: pointer;
+  box-shadow: 1px 1px 2px blueviolet;
 }
 
 .start-button {
   background-color: greenyellow;
-  border: 2px solid greenyellow;
 }
 
 .stop-button {
   background-color: lightcoral;
-  border: 2px solid lightcoral;
 }
 
 .clear-button {
   background-color: lightskyblue;
-  border: 2px solid lightskyblue;
 }
 
 .grid-button {
   background-color: beige;
-  border: 2px solid beige;
 }
 
 .speed-button {
   background-color: lightgray;
-  border: 2px solid lightgray;
 }
 
 
-@media only screen and (max-width: 900px) {
+/* MOBILE STYLES */
+@media only screen and (max-width: 1200px) {
   .content {
     flex-direction: column;
   }
 
   .content > div {
     width: 100%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  main {
+    padding: 1rem 0;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+  }
+
+  .controls button {
+    margin: 0.5rem;
   }
 }

@@ -12,7 +12,9 @@ const Controls = props => {
     setSides, 
     speed, 
     setSpeed,
-    setCount
+    setCount,
+    nextGeneration,
+    prevGeneration
   } = props;
 
   const largerGrid = () => {
@@ -47,6 +49,8 @@ const Controls = props => {
         {running ? 'Stop' : 'Start'}
       </button>
       <button onClick={() => clearGrid()} className="clear-button">Clear</button>
+      <button onClick={prevGeneration}>Prev</button>
+      <button onClick={nextGeneration}>Next</button>
       <button className="speed-button" onClick={slower}>Slower</button>
       <button className="speed-button" onClick={faster}>Faster</button>
       <button disabled={running} className="grid-button" onClick={smallerGrid}>-5 Grid</button>
