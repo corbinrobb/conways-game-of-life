@@ -125,10 +125,10 @@ main {
   width: 1rem;
   height: 1rem;
   background-color: #f6f7f8;
-  border: 1px solid #1e1e24;
+  border: 1px solid grey;
   margin: 1px;
   border-radius: 3px;
-  box-shadow: 2px 2px 4px #1e1e24;
+  box-shadow: 1px 1px 4px #1e1e24;
 }
 
 .alive {
@@ -147,15 +147,15 @@ button {
   font-size: 1rem;
   border-radius: 0.2rem;
   padding: 0.2rem 0.5rem;
-  border: 1px solid #1e1e24;
-  box-shadow: 1px 1px 2px #1e1e24;
+  border: 1px solid grey;
+  box-shadow: 1px 1px 4px grey;
 }
 
 button:hover {
   border-color: blueviolet;
   color: blueviolet;
   cursor: pointer;
-  box-shadow: 1px 1px 2px blueviolet;
+  box-shadow: 1px 1px 4px blueviolet;
 }
 
 .start-button {
