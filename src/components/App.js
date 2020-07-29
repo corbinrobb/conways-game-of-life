@@ -18,7 +18,7 @@ const createGrid = sides => {
 
 const App = () => {
   const [sides, setSides] = useState(25);
-  const [grid, setGrid] = useState(createGrid(sides))
+  const [grid, setGrid] = useState(createGrid(sides));
   const [running, setRunning] = useState(false);
   const [count, setCount] = useState(0);
   const [speed, setSpeed] = useState(1000);
@@ -26,71 +26,45 @@ const App = () => {
 
 
   useEffect(() => {
-    gridRef.current = grid;
-  }, [grid])
-
-  useEffect(() => {
-    setGrid(createGrid(sides))
-    sidesRef.current = sides;
+    setGrid(createGrid(sides));
   }, [sides])
 
   useEffect(() => {
     speedRef.current = speed;
   }, [speed])
 
-  useEffect(() => {
-    countRef.current = count;
-  }, [count])
-
-  useEffect(() => {
-    historyRef.current = history;
-  }, [history])
-
-
-  const gridRef = useRef(grid);
-  gridRef.current = grid;
 
   const runningRef = useRef(running);
   runningRef.current = running;
-
-  const sidesRef = useRef(sides);
-  sidesRef.current = sides;
-
+  
   const speedRef = useRef(speed);
   speedRef.current = speed;
 
-  const countRef = useRef(count);
-  countRef.current = count;
+  const checkNeighbors = prevGrid => {
+    const newGrid = prevGrid.map(row => [...row]);
 
-  const historyRef = useRef(history);
-  historyRef.current = history;
-
-
-  const checkNeighbors = () => {
-    const newGrid = gridRef.current.map(row => [...row]);
-
-    for (let row = 0; row < sidesRef.current; row++) {
-      for (let col = 0; col < sidesRef.current; col++) {
+    for (let row = 0; row < sides; row++) {
+      for (let col = 0; col < sides; col++) {
         let neighbors = 0;
         neighborCoord.forEach(([x, y]) => {
           const newRow = row + x;
           const newCol = col + y;
           if (newRow >= 0 
-            && newRow < sidesRef.current 
+            && newRow < sides
             && newCol >= 0 
-            && newCol < sidesRef.current) {
-            neighbors += gridRef.current[newRow][newCol]
+            && newCol < sides) {
+            neighbors += prevGrid[newRow][newCol]
           }
         })
         if (neighbors < 2 || neighbors > 3) {
           newGrid[row][col] = 0;
-        } else if (gridRef.current[row][col] === 0 && neighbors === 3) {
+        } else if (prevGrid[row][col] === 0 && neighbors === 3) {
           newGrid[row][col] = 1;
         }
       }
     }
 
-    setHistory([...historyRef.current, gridRef.current])
+    setHistory(prevHistory => [...prevHistory, prevGrid])
     return newGrid;
   }
 
@@ -98,30 +72,26 @@ const App = () => {
     if (!runningRef.current) return;
 
     setGrid(checkNeighbors);
-    setCount(countRef.current + 1);
+    setCount(prevCount => prevCount + 1);
 
     setTimeout(start, speedRef.current);
-  }, [])
+  }, [sides])
 
   const nextGeneration = () => {
     setGrid(checkNeighbors);
-    setCount(countRef.current + 1);
+    setCount(count + 1);
   }
 
   const prevGeneration = () => {
     if (history.length > 0) {
       setGrid(history[history.length - 1])
-      setHistory(history.filter(g => g !== history[history.length -1]))
+      setHistory(prevHistory => prevHistory.filter(g => g !== prevHistory[prevHistory.length -1]))
       setCount(count - 1);
     }
   }
 
   const clearGrid = () => {
-    setGrid(() => {
-      const newGrid = gridRef.current.map(row => row.map(col => 0));
-      gridRef.current = newGrid;
-      return newGrid;
-    });
+    setGrid(prevGrid => prevGrid.map(row => row.map(col => 0)));
     setCount(0);
     setSpeed(1000);
     setHistory([]);
@@ -141,8 +111,8 @@ const App = () => {
 
     clearGrid();
 
-    setGrid(() => {
-      const newGrid = gridRef.current.map(row => [...row]);
+    setGrid(prevGrid => {
+      const newGrid = prevGrid.map(row => [...row]);
 
       matrix.forEach(([x, y]) => {
         const newRow = row + x;
@@ -157,7 +127,7 @@ const App = () => {
   const randomGrid = () => {
     clearGrid()
 
-    setGrid(gridRef.current.map(row => row.map(col => {
+    setGrid(grid.map(row => row.map(col => {
         return (Math.random() < 0.35) ? 1 : 0;
       })))
   }

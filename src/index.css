@@ -158,6 +158,16 @@ button:hover {
   box-shadow: 1px 1px 4px blueviolet;
 }
 
+button:disabled {
+  background-color: lightgrey;
+  border-color: lightgrey;
+  color: grey;
+}
+
+button:disabled:hover {
+  box-shadow: 1px 1px 4px grey;
+}
+
 .start-button {
   background-color: greenyellow;
 }
