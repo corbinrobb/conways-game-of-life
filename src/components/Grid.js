@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Grid = ({ grid, setGrid }) => {
+const Grid = ({ grid, setGrid, running }) => {
 
   const changeColor = (rowIndex, colIndex) => {
     setGrid(() => {
@@ -18,7 +18,7 @@ const Grid = ({ grid, setGrid }) => {
               <div
                 key={'col' + i2}
                 className={col ? "cell alive" : "cell"} 
-                onClick={() => changeColor(i1, i2)} 
+                onClick={running ? null : () => changeColor(i1, i2)} 
               />
             ))}
           </div>

@@ -40,7 +40,7 @@ const App = () => {
   const speedRef = useRef(speed);
   speedRef.current = speed;
 
-  const checkNeighbors = prevGrid => {
+  const checkNeighbors = useCallback(prevGrid => {
     const newGrid = prevGrid.map(row => [...row]);
 
     for (let row = 0; row < sides; row++) {
@@ -66,7 +66,7 @@ const App = () => {
 
     setHistory(prevHistory => [...prevHistory, prevGrid])
     return newGrid;
-  }
+  }, [sides])
 
   const start = useCallback(() => {
     if (!runningRef.current) return;
@@ -75,7 +75,7 @@ const App = () => {
     setCount(prevCount => prevCount + 1);
 
     setTimeout(start, speedRef.current);
-  }, [sides])
+  }, [checkNeighbors])
 
   const nextGeneration = () => {
     setGrid(checkNeighbors);
@@ -92,6 +92,7 @@ const App = () => {
 
   const clearGrid = () => {
     setGrid(prevGrid => prevGrid.map(row => row.map(col => 0)));
+    setRunning(false);
     setCount(0);
     setSpeed(1000);
     setHistory([]);
@@ -138,7 +139,11 @@ const App = () => {
         <h1>Conway's Game of Life</h1>
         <div className={sides > 30 ? "content-larger" : "content"}>
           <div className="left">
-            <Grid grid={grid} setGrid={setGrid} />
+            <Grid
+              grid={grid}
+              setGrid={setGrid}
+              running={running}
+            />
             <div className="info">
               <p>Generation: {count}</p>
               <p>Speed: {(1/(speed/1000)).toFixed(1)} gen/s</p>
