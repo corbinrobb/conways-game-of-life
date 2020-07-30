@@ -50,8 +50,8 @@ const Controls = props => {
       </button>
       <button onClick={() => clearGrid()} className="clear-button">Clear</button>
       
-      <button onClick={prevGeneration}>Prev</button>
-      <button onClick={nextGeneration}>Next</button>
+      <button disabled={running} onClick={prevGeneration}>Prev</button>
+      <button disabled={running} onClick={nextGeneration}>Next</button>
 
       <button className="speed-button" onClick={slower}>Slower</button>
       <button className="speed-button" onClick={faster}>Faster</button>
